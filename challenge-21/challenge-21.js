@@ -19,39 +19,44 @@
 	dado ao elemento HTML deve definir o que o elemento é ou o que ele faz.
 	*/
 	
-	var $counter = document.querySelector('[data-js="counter"]');
-	var $start = document.querySelector('[data-js="start"]');
-	var $stop = document.querySelector('[data-js="stop"]');
-	var $reset = document.querySelector('[data-js="reset"]');
-	var timer;
-	var isCounting = false;
+  // DOM
+  var $chrono = document.querySelector('[data-js="chrono"]');
+  var $start = document.querySelector('[data-js="start"]');
+  var $stop = document.querySelector('[data-js="stop"]');
+  var $reset = document.querySelector('[data-js="reset"]');
 
-	$start.addEventListener('click', function(event){
-		event.preventDefault();
+  // Chronometer
+  var timer;
+  var isCounting = false;
 
-		if (!isCounting) {
-			(function startCounter() {
-				$counter.value++;
-				timer = setTimeout(startCounter, 1000);
-			})();
-			return isCounting = true;
-		}		
+  function startCounting(e) {
+    e.preventDefault();
+    if (!isCounting) {
+      (function() {					
+        timer = setTimeout(startCountingTrigger, 1000);
+        function startCountingTrigger() {
+          $chrono.value++;
+          timer = setTimeout(startCountingTrigger, 1000);
+        }
+      })();
+      isCounting = true;
+    }
+  }
+  function stopCounting(e) {
+    e.preventDefault();
+    clearTimeout(timer);
+    isCounting = false;
+  }
+  function reset(e) {
+    e.preventDefault();
+    clearTimeout(timer);
+    isCounting = false;
+    $chrono.value = 0;
+  }
 
-	}, false);
-
-	$stop.addEventListener('click', function(event){
-		event.preventDefault();
-
-		clearTimeout(timer);
-		return isCounting = false;
-	}, false);
-
-	$reset.addEventListener('click', function(event){
-		event.preventDefault();
-
-		clearTimeout(timer);
-		$counter.value = 0;
-		return isCounting = false;
-	}, false);
+  // Events
+  $start.addEventListener('click', startCounting, false);
+  $stop.addEventListener('click', stopCounting, false);
+  $reset.addEventListener('click', reset, false);
 
 })(window, document);
